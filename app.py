@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from models import *
 import os
 from dotenv import load_dotenv
+from sqlalchemy import inspect
 load_dotenv()
 
 app = Flask(__name__)
@@ -12,8 +13,16 @@ app.config['JWT_SECRET_KEY'] = 'books-store-secret-key123123123'  # Secret key f
 # Create tables
 db.init_app(app)
 jwt = JWTManager(app)
+
+def table_exists(table_name):
+    inspector = inspect(db.engine)
+    return table_name in inspector.get_table_names()
+
 with app.app_context():
-    db.create_all()
+    if table_exists('user'):
+        print("DB already exist")
+    else:
+        db.create_all()
 
 @app.route('/google-auth', methods=['POST'])
 def google_auth():
