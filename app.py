@@ -18,11 +18,11 @@ def table_exists(table_name):
     inspector = inspect(db.engine)
     return table_name in inspector.get_table_names()
 
-# with app.app_context():
-#     if table_exists('user'):
-#         print("DB already exist")
-#     else:
-#         db.create_all()
+with app.app_context():
+    if table_exists('user'):
+        print("DB already exist")
+    else:
+        db.create_all()
 
 @app.route('/google-auth', methods=['POST'])
 def google_auth():
